@@ -70,7 +70,10 @@ function StatsStrip() {
 }
 
 function ServiceCards({ linkLabel }: { linkLabel: string }) {
-  return <div className="cards">{services.map(([title, text, Icon]) => <article className="card" key={title}><div className="icon-box"><Icon /></div><h3>{title}</h3><p>{text}</p><Link href={linkLabel === 'Enquire' ? '/contact' : '/services'}>{linkLabel} <ArrowRight /></Link></article>)}</div>
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  return <div className="cards">{services.map(([title, text, Icon]) => <article className="card" key={title}><div className="icon-box"><Icon /></div><h3>{title}</h3><p>{mounted ? text : ''}</p><Link href={linkLabel === 'Enquire' ? '/contact' : '/services'}>{linkLabel} <ArrowRight /></Link></article>)}</div>
 }
 
 export function AboutPage() {
