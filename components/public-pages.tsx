@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import { ArrowRight, Award, BarChart3, Building2, Factory, Home, ShieldCheck, Sparkles, Target, TrendingUp, Users } from 'lucide-react'
+import { ArrowRight, Award, BarChart3, BriefcaseBusiness, Building2, Compass, Factory, Home, LineChart, Mail, MapPin, MessageCircle, Phone, ShieldCheck, Sparkles, Target, TrendingUp, Users } from 'lucide-react'
 import { db } from '@/lib/firebase'
 import { useApprovedListings } from '@/hooks/use-approved-listings'
 import { useBranding } from '@/hooks/use-branding'
@@ -81,12 +81,12 @@ export function AboutPage() {
 }
 
 export function ServicesPage() {
-  return <><PageHero eyebrow="SERVICES" title="A full-spectrum real estate offering." text="We work across the residential, commercial and industrial markets — and we advise on value before we ever advise on price." /><section className="section"><div className="cards">{services.map(([title, text, Icon]) => <article className="card" key={title}><div className="icon-box"><Icon /></div><h3>{title}</h3><p>{text}</p><Link href="/contact">Enquire <ArrowRight /></Link></article>)}</div></section><CtaSection /></>
+  return <><PageHero eyebrow="SERVICES" title="A full-spectrum real estate offering." text="We work across the residential, commercial and industrial markets — and we advise on value before we ever advise on price." /><section className="section"><ServiceCards linkLabel="Enquire" /></section><CtaSection /></>
 }
 
 function CtaSection() { return <section className="section cta-section"><span className="eyebrow">READY WHEN YOU ARE</span><h2>Ready to start a conversation?</h2><p>Our team is one call or message away.</p><Link className="button olive" href="/contact">Contact us <ArrowRight /></Link></section> }
 
-export function EnquiryForm({ source }: { source: string }) {
+export function EnquiryForm({ source, title = "Let's talk about your next move.", subtitle = "Whether you're buying your first home or expanding a commercial portfolio, our team is ready to help. Reach out for a confidential discussion.", submitLabel = 'Send enquiry' }: { source: string; title?: string; subtitle?: string; submitLabel?: string }) {
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -95,7 +95,7 @@ export function EnquiryForm({ source }: { source: string }) {
     const data = Object.fromEntries(new FormData(event.currentTarget))
     try { await addDoc(collection(db, 'enquiries'), { ...data, source, createdAt: serverTimestamp() }); setSent(true); event.currentTarget.reset() } catch (submissionError) { console.error('Unable to send enquiry:', submissionError); setError("Sorry, we couldn't send your message. Please WhatsApp or call 083 422 4505.") } finally { setLoading(false) }
   }
-  return <section className="section contact"><div><span className="eyebrow">GET IN TOUCH</span><h2>Let&apos;s talk about your next move.</h2><p>Whether you&apos;re buying your first home or expanding a commercial portfolio, our team is ready to help. Reach out for a confidential discussion.</p><div className="contact-lines"><a href="tel:+27834224505">Phone — 083 422 4505</a><a href="mailto:ntsaphoquwe@gmail.com">Email — ntsaphoquwe@gmail.com</a><span>Coverage — National, South Africa</span></div></div><form className="form-card form-grid" onSubmit={submit}><label className="field">NAME<input name="name" required /></label><label className="field">EMAIL<input name="email" type="email" required /></label><label className="field">PHONE<input name="phone" /></label><label className="field full">MESSAGE<textarea name="message" required /></label>{error && <p className="form-error full" role="alert">{error}</p>}{sent && <p className="form-success full" role="status">Thank you, we&apos;ll be in touch soon.</p>}<button className="button olive" disabled={loading}>{loading ? 'Sending…' : 'Send enquiry'} <ArrowRight /></button></form></section>
+  return <section className="section contact"><div><span className="eyebrow">GET IN TOUCH</span><h2>{title}</h2><p>{subtitle}</p><div className="contact-lines"><a href="tel:+27834224505">Phone — 083 422 4505</a><a href="mailto:ntsaphoquwe@gmail.com">Email — ntsaphoquwe@gmail.com</a><span>Coverage — National, South Africa</span></div></div><form className="form-card form-grid" onSubmit={submit}><label className="field">NAME<input name="name" required /></label><label className="field">EMAIL<input name="email" type="email" required /></label><label className="field">PHONE<input name="phone" /></label><label className="field full">MESSAGE<textarea name="message" required /></label>{error && <p className="form-error full" role="alert">{error}</p>}{sent && <p className="form-success full" role="status">Thank you, we&apos;ll be in touch soon.</p>}<button className="button olive" disabled={loading}>{loading ? 'Sending…' : submitLabel} <ArrowRight /></button></form></section>
 }
 
 export function GenericPage({ kind, title, text }: { kind: string; title: string; text: string }) { return <><PageHero eyebrow={kind.toUpperCase()} title={title} text={text} /><section className="section"><ServiceCards linkLabel="Enquire" /></section><EnquiryForm source={kind.toLowerCase()} /></> }
